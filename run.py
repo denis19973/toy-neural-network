@@ -66,26 +66,34 @@ def train_network(network, train, l_rate, n_epoch, n_outputs):
 		sum_error = 0
 		for row in train:
 			outputs = forward_propagate(network, row)
-			expected = [0 for i in range(n_outputs)]
-			expected[row[-1]] = 1
+			if n_outputs > 1:
+				expected = [0 for i in range(n_outputs)]
+				expected[row[-1]] = 1
+			else:
+				expected = [row[-1]]
 			sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
 			backward_propagate_error(network, expected)
 			update_weights(network, row, l_rate)
 		print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
 
+def predict(network, row):
+	outputs = forward_propagate(network, row)
+	if len(outputs) > 1:
+		return outputs.index(max(outputs))
+	else:
+		return outputs[0]
 
+x = [
+		[0,0,1, 0],
+		[0,1,1, 1],
+		[1,0,1, 0],
+		[1,1,1, 1],
+	]
 
-dataset = [[2.7810836,2.550537003,0],
-	[1.465489372,2.362125076,0],
-	[3.396561688,4.400293529,0],
-	[1.38807019,1.850220317,0],
-	[3.06407232,3.005305973,0],
-	[7.627531214,2.759262235,1],
-	[5.332441248,2.088626775,1],
-	[6.922596716,1.77106367,1],
-	[8.675418651,-0.242068655,1],
-	[7.673756466,3.508563011,1]]
-n_inputs = len(dataset[0]) - 1
-n_outputs = len(set([row[-1] for row in dataset]))
+n_inputs = len(x[0]) - 1
+n_outputs = 1
 network = initialize_network(n_inputs, 2, n_outputs)
-train_network(network, dataset, 0.5, 8000, n_outputs)
+train_network(network, x, 0.5, 2000, n_outputs)
+
+print('new example must be 0', predict(network, [0,0,1]))
+print('new example must be 1', predict(network, [0,1,1]))
