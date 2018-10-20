@@ -1,10 +1,41 @@
 import numpy as np
+from csv import reader
+
 
 def sigmoid(x):
 	return 1 / (1 + np.exp(-x))
 
 def sigmoid_deriv(x):
 	return x * (1 - x)
+
+def read_csv_file(file_path):
+	dataset = []
+	with open(file_path, 'r') as file:
+		for row in reader(file):
+			if row:
+				for col in range(len(row)):
+					if col == len(row) - 1:
+						row[col] = int(row[col].strip())
+					else:
+						row[col] = float(row[col].strip())
+				dataset.append(row)
+	return dataset
+
+def normalize(dataset):
+	stats = []
+	for column_index, column in enumerate(zip(*dataset)):
+		if column_index == len(dataset[0]) - 1:
+			break
+		stat = {}
+		stat['min'] = min(column)
+		stat['max'] = max(column)
+		stat['average'] = sum(column) / len(column)
+		stats.append(stat)
+	for row in dataset:
+		for col, col_stat in enumerate(stats):
+			row[col] = (row[col] - col_stat['average']) / (col_stat['max'] - col_stat['min'])
+	return dataset
+
 
 def initialize_network(n_inputs, n_hidden, n_outputs):
 	network = []
@@ -68,7 +99,7 @@ def train_network(network, train, l_rate, n_epoch, n_outputs):
 			outputs = forward_propagate(network, row)
 			if n_outputs > 1:
 				expected = [0 for i in range(n_outputs)]
-				expected[row[-1]] = 1
+				expected[row[-1] - 1] = 1
 			else:
 				expected = [row[-1]]
 			sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
@@ -79,21 +110,25 @@ def train_network(network, train, l_rate, n_epoch, n_outputs):
 def predict(network, row):
 	outputs = forward_propagate(network, row)
 	if len(outputs) > 1:
-		return outputs.index(max(outputs))
+		return outputs.index(max(outputs)) + 1
 	else:
 		return outputs[0]
 
-x = [
-		[0,0,1, 0],
-		[0,1,1, 1],
-		[1,0,1, 0],
-		[1,1,1, 1],
-	]
+def get_cross_validation_error(network, cv_dataset, threshold=0.5):
+	sum_error = 0
+	for cv_row in cv_dataset:
+		predicted = predict(network, cv_row)
+		expected_class = cv_row[len(cv_row) - 1]
+		print('p={}, ex={}'.format(predicted, expected_class))
+		if predicted != expected:
+			sum_error += 1
+	return sum_error / len(cv_dataset)
 
-n_inputs = len(x[0]) - 1
-n_outputs = 1
-network = initialize_network(n_inputs, 2, n_outputs)
-train_network(network, x, 0.5, 2000, n_outputs)
 
-print('new example must be 0', predict(network, [0,0,1]))
-print('new example must be 1', predict(network, [0,1,1]))
+dataset = read_csv_file('dataset.csv')
+dataset = normalize(dataset)
+n_inputs = len(dataset[0]) - 1
+n_outputs = 3
+network = initialize_network(n_inputs, 4, n_outputs)
+train_network(network, dataset, 0.5, 500, n_outputs)
+print('CV error={}'.format(get_cross_validation_error(network, dataset)))
