@@ -4,7 +4,7 @@ I tested it on Seeds Data Set.
 # Data set information
 Data set is measurements of geometrical properties of kernels belonging to three different varieties of wheat. A soft X-ray technique and GRAINS package were used to construct all seven, real-valued attributes.
 
-### File columns is:
+### File columns:
 1. area A, 
 2. perimeter P, 
 3. compactness C = 4*pi*A/P^2, 
