@@ -2,7 +2,7 @@ My target was build neural network from scratch starting with simple implementat
 I tested it on Seeds Data Set.
 
 # Data set information
-Data set is measurements of geometrical properties of kernels belonging to three different varieties of wheat. A soft X-ray technique and GRAINS package were used to construct all seven, real-valued attributes.
+Data set is measurements of geometrical properties of kernels belonging to three different varieties of wheat. A soft X-ray technique and GRAINS package were used to construct all seven, real-valued attributes. My task is classify kernel to one of 3 classes.
 
 ### File columns:
 1. area A, 
