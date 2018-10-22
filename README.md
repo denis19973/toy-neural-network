@@ -22,4 +22,12 @@ Data set is measurements of geometrical properties of kernels belonging to three
 
 # Results
  - Accuracy on cross-validation set is **~93%**
-
+&nbsp;
+&nbsp;
+&nbsp;
+##### Data set source:
+*MaÅ‚gorzata Charytanowicz, Jerzy Niewczas 
+Institute of Mathematics and Computer Science, 
+The John Paul II Catholic University of Lublin, KonstantynÃ³w 1 H, 
+PL 20-708 Lublin, Poland 
+e-mail: {mchmat,jniewczas}@kul.lublin.pl*
